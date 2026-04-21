@@ -1,20 +1,26 @@
+directive @lookup on FIELD_DEFINITION
+directive @internal on FIELD_DEFINITION
+directive @sharable on INTERFACE | OBJECT | FIELD_DEFINITION
+
 type Query
 {
     departments(where: DepartmentFilter, first: Int, before: String, after: String, order: DepartmentOrder): DepartmentConnection
     productionLines(where: ProductionLineFilter, first: Int, before: String, after: String, order: ProductionLineOrder): ProductionLineConnection
     productionUnits(where: ProductionUnitFilter, first: Int, last: Int, before: String, after: String, order: ProductionUnitOrder): ProductionUnitConnection
+
+    departmentsById(departmentId: [Float!]): [Department] @lookup @internal
+    productionLinesById(productionLineId: [Float!]): [ProductionLine] @lookup @internal
+    productionUnitsById(productionUnitId: [Float!]): [ProductionUnit] @lookup @internal
 }
 
 input DepartmentFilter
 {
-    id: String
     departmentId: ID
     department: String
 }
 
 input DepartmentOrder
 {
-    id: SortOrder
     departmentId: SortOrder
     department: SortOrder
 }
@@ -31,10 +37,10 @@ type DepartmentEdge
     cursor: String!
 }
 
-type Department
+type Department implements Node @sharable
 {
-    id: String
-    departmentId: ID
+    id: ID!
+    departmentId: Float
     department: String
     productionLines(where: ProductionLineFilter, first: Int, last: Int, after: String, before: String, order: ProductionLineOrder): ProductionLineConnection
 }
@@ -53,7 +59,6 @@ type ProductionLineEdge
 
 input ProductionLineFilter
 {
-    id: String
     productionLineId: ID
     departmentId: Float
     line: String
@@ -62,17 +67,16 @@ input ProductionLineFilter
 #
 input ProductionLineOrder
 {
-    id: SortOrder
     productionLineId: SortOrder
     departmentId: SortOrder
     line: SortOrder
     department: DepartmentOrder
 }
 #
-type ProductionLine
+type ProductionLine implements Node @sharable
 {
-    id: String
-    productionLineId: ID
+    id: ID!
+    productionLineId: Float
     departmentId: Float
     line: String
     department: Department
@@ -89,7 +93,6 @@ type PageInfo
 
 input ProductionUnitFilter
 {
-    id: String
     productionUnitId: ID
     unit: String
     productionLineId: Float
@@ -98,7 +101,6 @@ input ProductionUnitFilter
 
 input ProductionUnitOrder
 {
-    id: SortOrder
     productionUnitId: SortOrder
     unit: SortOrder
     productionLineId: SortOrder
@@ -117,10 +119,10 @@ type ProductionUnitEdge
     cursor: String
 }
 
-type ProductionUnit
+type ProductionUnit implements Node @sharable
 {
-    id: String
-    productionUnitId: ID
+    id: ID!
+    productionUnitId: Float
     unit: String
     productionLineId: Float
     productionLine: ProductionLine
@@ -130,4 +132,9 @@ enum SortOrder
 {
     ASC
     DESC
+}
+
+interface Node @sharable
+{
+    id: ID!
 }

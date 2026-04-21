@@ -99,4 +99,22 @@ public class MesGraphqlController{
         return resultMap;
     }
 
+    @QueryMapping("departmentsById")
+    public List<Department> departmentsById(@Argument List<Long> departmentIds)
+    {
+        return departmentRepository.findAllById(departmentIds);
+    }
+
+    @QueryMapping("productionLinesById")
+    public List<ProductionLine> productionLinesById(@Argument List<Long> productionLineId)
+    {
+        return productionLineRepository.findAllById(productionLineId);
+    }
+
+    @QueryMapping("productionUnitsById")
+    public List<ProductionUnit> productionUnitsById(@Argument List<Long> productionUnitId)
+    {
+        return productionUnitRepository.findAllById(productionUnitId);
+    }
+
 }
