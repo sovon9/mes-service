@@ -99,6 +99,48 @@ public class MesGraphqlController{
         return resultMap;
     }
 
+    @QueryMapping("productionLines")
+    public Window<ProductionLine> productionLines(ScrollSubrange subrange, @Argument Map<String, Object> where, @Argument Map<String, Object> order)
+    {
+        ScrollPosition scrollPosition = subrange.position().orElse(ScrollPosition.offset());
+        int limit = subrange.count().orElse(10);
+
+        Sort.Direction direction = Sort.Direction.ASC;
+        if(!subrange.forward())
+        {
+            direction=Sort.Direction.DESC;
+        }
+
+        Sort sort = QueryBuilderUtil.buildSort(order, "productionLineId", direction);
+        Specification<ProductionLine> productionLineSpecification = QueryBuilderUtil.buildSpecification(where);
+        if(productionLineSpecification==null)
+        {
+            return productionLineRepository.findBy(scrollPosition, Limit.of(limit), sort);
+        }
+        return productionLineRepository.findBy(productionLineSpecification, q->q.limit(limit).sortBy(sort).scroll(scrollPosition));
+    }
+
+    @QueryMapping("productionUnits")
+    public Window<ProductionUnit> productionUnits(ScrollSubrange subrange, @Argument Map<String, Object> where, @Argument Map<String, Object> order)
+    {
+        ScrollPosition scrollPosition = subrange.position().orElse(ScrollPosition.offset());
+        int limit = subrange.count().orElse(10);
+
+        Sort.Direction direction = Sort.Direction.ASC;
+        if(!subrange.forward())
+        {
+            direction=Sort.Direction.DESC;
+        }
+
+        Sort sort = QueryBuilderUtil.buildSort(order, "productionUnitId", direction);
+        Specification<ProductionUnit> productionUnitSpecification = QueryBuilderUtil.buildSpecification(where);
+        if(productionUnitSpecification==null)
+        {
+            return productionUnitRepository.findBy(scrollPosition, Limit.of(limit), sort);
+        }
+        return productionUnitRepository.findBy(productionUnitSpecification, q->q.limit(limit).sortBy(sort).scroll(scrollPosition));
+    }
+
     @QueryMapping("departmentsById")
     public List<Department> departmentsById(@Argument List<Long> departmentIds)
     {

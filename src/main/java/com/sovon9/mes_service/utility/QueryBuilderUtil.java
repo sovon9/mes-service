@@ -2,6 +2,7 @@ package com.sovon9.mes_service.utility;
 
 import com.sovon9.mes_service.entities.Department;
 import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 
@@ -56,7 +57,7 @@ public class QueryBuilderUtil {
         return Sort.by(orders);
     }
 
-    public static Specification<Department> buildSpecification(Map<String, Object> filter) {
+    public static <T> Specification<T> buildSpecification(Map<String, Object> filter) {
         if (filter == null || filter.isEmpty()) {
             return null; // Return null when no filter is provided
         }
@@ -73,7 +74,7 @@ public class QueryBuilderUtil {
     }
 
     @SuppressWarnings("unchecked")
-    private static List<Predicate> buildPredicates(Map<String, Object> filter, jakarta.persistence.criteria.Root<Department> root, jakarta.persistence.criteria.CriteriaBuilder cb) {
+    private static List<Predicate> buildPredicates(Map<String, Object> filter, Root<?> root, jakarta.persistence.criteria.CriteriaBuilder cb) {
         List<Predicate> predicates = new ArrayList<>();
 
         for (Map.Entry<String, Object> entry : filter.entrySet()) {

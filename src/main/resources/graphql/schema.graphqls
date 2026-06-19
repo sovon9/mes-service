@@ -10,7 +10,7 @@ type Query
 
     departmentsById(departmentId: [Float!]): [Department] @lookup @internal
     productionLinesById(productionLineId: [Float!]): [ProductionLine] @lookup @internal
-    productionUnitsById(productionUnitId: [Float!]): [ProductionUnit] @lookup @internal
+    productionUnitsById(productionUnitId: [Float]): [ProductionUnit] @lookup @internal
 }
 
 input DepartmentFilter
@@ -104,7 +104,7 @@ input ProductionUnitOrder
     productionUnitId: SortOrder
     unit: SortOrder
     productionLineId: SortOrder
-    productionLine: SortOrder
+    productionLine: ProductionLineOrder
 }
 
 type ProductionUnitConnection

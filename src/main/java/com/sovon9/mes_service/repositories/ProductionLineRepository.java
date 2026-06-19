@@ -13,7 +13,7 @@ import java.util.List;
 
 @Repository
 public interface ProductionLineRepository extends JpaRepository<ProductionLine, Long>, JpaSpecificationExecutor<ProductionLine> {
-    public Window<ProductionLine> getBy(ScrollPosition position, Limit limit, Sort sort);
+    public Window<ProductionLine> findBy(ScrollPosition position, Limit limit, Sort sort);
     
     List<ProductionLine> findByDepartmentIdIn(List<Long> departmentIds);
 }
